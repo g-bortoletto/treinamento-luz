@@ -1,0 +1,5 @@
+1. Malloc aceita um parâmetro e não inicializa a memória. Calloc aceita dois parâmetros e inicializa a memória para 0.
+2. Atribuição implicita acontece quando se designa uma variável de um tipo para outra de outro tipo sem nenhum tipo de preparo. A explícita contém um cast.
+3. Uma heap é uma árvore, onde todos os elementos menores que o nó pai ficam à esquerda e os maiores ficam à direita. Uma pilha (stack) contém diversos elementos que são recuperados na ordem inversa de inserção.
+
+- A variável1 guarda o valor de um inteiro (10). A variável2 é um ponteiro para um inteiro e recebe o endereço de memória da variável1, portanto os dois apontam para o mesmo dado. A variável 3 é um ponteiro que aponta para a memória da variável2, porém, por ser um ponteiro simples, não é possível recuperar os dados de variavel1.
