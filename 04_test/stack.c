@@ -1,132 +1,214 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define POOL_SIZE 4096
+
+typedef struct mempool_t
+{
+  struct mempool_t* next;
+  int lastIndex;
+  int* data;
+} mempool_t;
+
 typedef struct stack_t
 {
-  int top;
+  int* top;
   unsigned size;
-  unsigned capacity;
-  int* data;
+  mempool_t* data;
 } stack_t;
 
-static stack_t* StackCreate(unsigned capacity)
+static stack_t* stack_create()
 {
-  stack_t* stack = 0;
-  stack = (stack_t*)malloc(3 * sizeof(int) + sizeof(int*));
+  stack_t* result = 0;
 
-  stack->top = -1;
-  stack->size = 0;
-  stack->capacity = capacity;
-  stack->data = (int*)malloc(stack->capacity * sizeof(int));
-  memset(stack->data, 0, sizeof(stack->data));
+  result = (stack_t*)malloc(sizeof(result));
 
-  return stack;
+  result->top = 0;
+  result->size = 0;
+  result->data = 0;
+
+  return result;
 }
 
-static void StackDestroy(stack_t* stack)
+static void stack_cleanup(stack_t* stack)
 {
-  stack->top = -1;
-  stack->size = 0;
-  stack->capacity = 0;
+  mempool_t* previous = 0;
+  mempool_t* pool = stack->data;
 
-  free(stack->data = 0);
+  while(pool->next)
+  {
+    previous = pool;
+    pool = pool->next;
+    free(previous->data = 0);
+    free(previous = 0);
+  }
+  if (pool)
+  {
+    free(pool->data = 0);
+    free(pool = 0);
+  }
+
   free(stack = 0);
 }
 
-static int StackPush(stack_t* stack, int element)
+static mempool_t* pool_allocate()
 {
-  int result = 0;
+  mempool_t* result = 0;
 
-  if (stack->size == stack->capacity)
-  {
-    result = 0;
-  }
-  else
-  {
-    ++stack->top;
-    stack->data[stack->top] = element;
-    ++stack->size;
-    result = 1;
-  }
+  result = (mempool_t*)malloc(sizeof(mempool_t*) + sizeof(int) + sizeof(int*));
+  result->lastIndex = -1;
+  result->next = 0;
+  result->data = (int*)malloc(POOL_SIZE * sizeof(int));
+  memset(result, 0, sizeof(result));
 
   return result;
 }
 
-static int StackPop(stack_t* stack)
+static int stack_push(stack_t* stack, int data)
 {
   int result = 0;
-
-  if (stack->top == -1 || stack->size == 0 || stack->capacity == 0)
+  mempool_t* pool = stack->data;
+  if (!pool)
   {
-    result = 0;
+    pool = pool_allocate();
+    stack->data = pool;
   }
   else
   {
-    result = stack->data[stack->top];
-    stack->data[stack->top] = 0;
-    --stack->top;
-    --stack->size;
+    while (pool->next)
+    {
+      pool = pool->next;
+    }
+    if (pool->lastIndex >= POOL_SIZE - 1)
+    {
+      mempool_t* new_pool = pool_allocate();
+      pool->next = new_pool;
+      pool = pool->next;
+    }
   }
+  ++pool->lastIndex;
+  pool->data[pool->lastIndex] = data;
+  stack->top = &pool->data[pool->lastIndex];
+  ++stack->size;
+  result = 1;
+  return result;
+}
+
+static int stack_pop(stack_t* stack)
+{
+  if (!stack->size)
+  {
+    return 0;
+  }
+  mempool_t* previous = 0;
+  mempool_t* pool = stack->data;
+  while (pool->next)
+  {
+    previous = pool;
+    pool = pool->next;
+  }
+  int result = pool->data[pool->lastIndex];
+  pool->data[pool->lastIndex] = 0;
+  --pool->lastIndex;
+  if (pool->lastIndex < 0 && previous)
+  {
+    previous->next = 0;
+    free(pool);
+  }
+  if (previous)
+  {
+    stack->top = &previous->data[previous->lastIndex];
+  }
+  else
+  {
+    stack->top = &pool->data[pool->lastIndex];
+  }
+  --stack->size;
 
   return result;
 }
 
-static int StackTop(stack_t* stack)
+static int stack_peek(stack_t* stack)
 {
-  return stack->data[stack->top];
+  return *stack->top;
 }
 
-static int StackIsEmpty(stack_t* stack)
+static void stack_print(stack_t* stack)
 {
-  return stack->size == 0;
-}
-
-static void StackPrint(stack_t* stack)
-{
-  int i;
-  for (i = 0; i < stack->size; ++i)
+  if (!stack || !stack->data)
   {
-    printf("%d ", stack->data[i]);
+    return;
   }
-  printf("\n");
+
+  mempool_t* pool = stack->data;
+  int i = 0;
+
+  do
+  {
+    for (i = 0; i <= pool->lastIndex; ++i)
+    {
+      fprintf(stdout, "%d ", pool->data[i]);
+    }
+    pool = pool->next;
+  }
+  while (pool);
+  fprintf(stdout, "\n");
 }
 
 int main()
 {
-  stack_t* stack;
-  stack = StackCreate(10);
+  stack_t* stack = stack_create();
 
-  StackPush(stack, 11);
-  StackPush(stack, 22);
-  StackPush(stack, 33);
-  StackPush(stack, 44);
-  StackPush(stack, 55);
-  StackPush(stack, 66);
+  if (stack_push(stack, 11))
+  {
+    stack_print(stack);
+  }
+  if (stack_push(stack, 22))
+  {
+    stack_print(stack);
+  };
+  if (stack_push(stack, 33))
+  {
+    stack_print(stack);
+  };
+  if (stack_push(stack, 44))
+  {
+    stack_print(stack);
+  }
 
-  StackPrint(stack);
+  int popped = stack_pop(stack);
+  stack_print(stack);
+  fprintf(stdout, "popped %d\n", popped);
+  popped = stack_pop(stack);
+  stack_print(stack);
+  fprintf(stdout, "popped %d\n", popped);
+  popped = stack_pop(stack);
+  stack_print(stack);
+  fprintf(stdout, "popped %d\n", popped);
+  popped = stack_pop(stack);
+  stack_print(stack);
+  fprintf(stdout, "popped %d\n", popped);
 
-  int popped = 0;
-  popped = StackPop(stack);
-  printf("Popped: %d\n", popped);
-  popped = StackPop(stack);
-  printf("Popped: %d\n", popped);
-  popped = StackPop(stack);
-  printf("Popped: %d\n", popped);
+  stack_push(stack, 11);
 
-  StackPrint(stack);
+  if (stack_push(stack, 11))
+  {
+    stack_print(stack);
+  }
+  if (stack_push(stack, 22))
+  {
+    stack_print(stack);
+  };
+  if (stack_push(stack, 33))
+  {
+    stack_print(stack);
+  };
+  if (stack_push(stack, 44))
+  {
+    stack_print(stack);
+  }
 
-  printf("Stack is empty: %s\n", StackIsEmpty(stack) ? "YES" : "NO");
-  printf("Stack top is: %d\n", StackTop(stack));
+  stack_cleanup(stack);
 
-  popped = StackPop(stack);
-  printf("Popped: %d\n", popped);
-  popped = StackPop(stack);
-  printf("Popped: %d\n", popped);
-  popped = StackPop(stack);
-  printf("Popped: %d\n", popped);
-
-  printf("Stack is empty: %s\n", StackIsEmpty(stack) ? "YES" : "NO");
-
-  StackDestroy(stack);
   return 0;
 }
