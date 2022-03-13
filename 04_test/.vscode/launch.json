@@ -13,7 +13,8 @@
       "stopAtEntry": false,
       "cwd": "${fileDirname}",
       "environment": [],
-      "preLaunchTask": "C/C++: cl.exe build active file"
+      "preLaunchTask": "C/C++: cl.exe build active file",
+      "console": "integratedTerminal"
     }
   ]
 }
