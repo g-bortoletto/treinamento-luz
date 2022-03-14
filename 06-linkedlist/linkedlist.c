@@ -54,7 +54,6 @@ static void linked_list_cleanup(linked_list_t* linked_list)
   linked_list->first = 0;
   linked_list->last = 0;
   linked_list->size = 0;
-  linked_list->first = 0;
   free(linked_list = 0);
 }
 
