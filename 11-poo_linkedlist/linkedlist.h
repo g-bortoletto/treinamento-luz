@@ -4,28 +4,29 @@
 
 #include "link.h"
 
+template<class T>
 class LinkedList
 {
 private:
-	Link* m_first;
-	Link* m_last;
+	Link<T>* m_first;
+	Link<T>* m_last;
 	int   m_size;
 
 public:
 	LinkedList();
 	~LinkedList();
 
-	void setFirst(Link* first);
-	void setLast(Link* last);
+	void setFirst(Link<T>* first);
+	void setLast(Link<T>* last);
 	void setSize(int size);
-	Link* getFirst();
-	Link* getLast();
-	int getSize();
+	Link<T>* getFirst();
+	Link<T>* getLast();
+	T getSize();
 
 	void cleanup();
-	void add(int data);
-	void remove(int data);
-	Link* search(int data);
+	void add(T data);
+	void remove(T data);
+	Link<T>* search(T data);
 	void print();
 };
 

@@ -3,9 +3,9 @@
 
 int main()
 {
-	LinkedList *linked_list = 0;
+	LinkedList<char> *linked_list = 0;
 
-	linked_list = new LinkedList();
+	linked_list = new LinkedList<char>();
 
 	linked_list->add(11);
 	linked_list->print();
@@ -23,7 +23,7 @@ int main()
 	linked_list->remove(33);
 	linked_list->print();
 
-	Link *found = linked_list->search(33);
+	Link<char> *found = linked_list->search(33);
 
 	delete linked_list;
 

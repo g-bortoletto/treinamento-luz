@@ -2,54 +2,63 @@
 
 #include <stdio.h>
 
-LinkedList::LinkedList()
+template<class T>
+LinkedList<T>::LinkedList()
 {
 	setFirst(nullptr);
 	setLast(nullptr);
 	setSize(0);
 }
 
-LinkedList::~LinkedList()
+template<class T>
+LinkedList<T>::~LinkedList()
 {
 	cleanup();
 }
 
-void LinkedList::setFirst(Link *first)
+template<class T>
+void LinkedList<T>::setFirst(Link<T> *first)
 {
 	m_first = first;
 }
 
-void LinkedList::setLast(Link *last)
+template<class T>
+void LinkedList<T>::setLast(Link<T> *last)
 {
 	m_last = last;
 }
 
-void LinkedList::setSize(int size)
+template<class T>
+void LinkedList<T>::setSize(int size)
 {
 	m_size = size;
 }
 
-Link *LinkedList::getFirst()
+template<class T>
+Link<T> *LinkedList<T>::getFirst()
 {
 	return m_first;
 }
 
-Link *LinkedList::getLast()
+template<class T>
+Link<T> *LinkedList<T>::getLast()
 {
 	return m_last;
 }
 
-int LinkedList::getSize()
+template<class T>
+T LinkedList<T>::getSize()
 {
 	return m_size;
 }
 
-void LinkedList::cleanup()
+template<class T>
+void LinkedList<T>::cleanup()
 {
 	if (getSize() > 0)
 	{
-		Link *previous = nullptr;
-		Link *current = getFirst();
+		Link<T> *previous = nullptr;
+		Link<T> *current = getFirst();
 
 		while (current)
 		{
@@ -70,16 +79,17 @@ void LinkedList::cleanup()
 	setSize(0);
 }
 
-void LinkedList::add(int data)
+template<class T>
+void LinkedList<T>::add(T data)
 {
 	if (!this)
 	{
 		return;
 	}
 
-	Link *newLink = new Link(data);
-	Link *link = getFirst();
-	Link *previous = nullptr;
+	Link<T> *newLink = new Link<T>(data);
+	Link<T> *link = getFirst();
+	Link<T> *previous = nullptr;
 
 	while (link)
 	{
@@ -100,10 +110,11 @@ void LinkedList::add(int data)
 	setSize(getSize() + 1);
 }
 
-void LinkedList::remove(int data)
+template<class T>
+void LinkedList<T>::remove(T data)
 {
-	Link *link = getFirst();
-	Link *previous = nullptr;
+	Link<T> *link = getFirst();
+	Link<T> *previous = nullptr;
 
 	while (link)
 	{
@@ -129,9 +140,10 @@ void LinkedList::remove(int data)
 	}
 }
 
-Link *LinkedList::search(int data)
+template<class T>
+Link<T> *LinkedList<T>::search(T data)
 {
-	Link *found = 0;
+	Link<T> *found = 0;
 	int i;
 
 	found = getFirst();
@@ -148,16 +160,17 @@ Link *LinkedList::search(int data)
 	return found;
 }
 
-void LinkedList::print()
+template<class T>
+void LinkedList<T>::print()
 {
-	Link *link = getFirst();
+	Link<T> *link = getFirst();
 	if (!link)
 	{
 		return;
 	}
 	do
 	{
-		fprintf(stdout, "%d ", link->getData());
+		fprintf(stdout, "%c ", link->getData());
 		link = link->getNext();
 	} while (link);
 	fprintf(stdout, "\n");

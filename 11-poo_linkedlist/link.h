@@ -2,23 +2,24 @@
 #define LINK_H
 
 
+template<class T>
 class Link
 {
 private:
-	int m_data;
-	Link* m_next;
+	T m_data;
+	Link<T>* m_next;
 
 public:
-	Link(int data);
+	Link(T data);
 	~Link();
 
-	void setData(int data);
-	void setNext(Link* next);
+	void setData(T data);
+	void setNext(Link<T>* next);
 
-	int getData();
-	Link* getNext();
+	T getData();
+	Link<T>* getNext();
 
-	Link* operator=(Link* other);
+	Link<T>* operator=(Link<T>* other);
 };
 
 

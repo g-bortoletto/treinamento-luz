@@ -1,38 +1,45 @@
 #include "link.h"
 
-Link::Link(int data)
+template<class T>
+Link<T>::Link(T data)
 {
 	setData(data);
 	setNext(nullptr);
 }
 
-Link::~Link()
+template<class T>
+Link<T>::~Link()
 {
 	setData(0);
 	setNext(nullptr);
 }
 
-void Link::setData(int data)
+template<class T>
+void Link<T>::setData(T data)
 {
 	m_data = data;
 }
 
-void Link::setNext(Link* next)
+template<class T>
+void Link<T>::setNext(Link* next)
 {
 	m_next = next;
 }
 
-int Link::getData()
+template<class T>
+T Link<T>::getData()
 {
 	return m_data;
 }
 
-Link* Link::getNext()
+template<class T>
+Link<T>* Link<T>::getNext()
 {
 	return m_next;
 }
 
-Link* Link::operator=(Link* other)
+template<class T>
+Link<T>* Link<T>::operator=(Link<T>* other)
 {
 	setData(other->getData());
 	setNext(other->getNext());
