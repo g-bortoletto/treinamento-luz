@@ -1,27 +1,31 @@
 #ifndef STACK_H
 #define STACK_H
 
+#include "mempool.h"
 
-template<class T>
 class Stack
 {
 private:
-	Node<T>* m_top;
+	int* m_top;
 	unsigned m_size;
+	Mempool* m_data;
 
 public:
 	Stack();
 	~Stack();
 
-	void setTop(const Node<T>* top);
-	Node<T>* getTop() const;
+	void setTop(int* top);
+	void setSize(unsigned size);
+	void setData(Mempool* data);
 
-	void setSize(const unsigned size);
-	unsigned getSize() const;
+	int* getTop();
+	unsigned getSize();
+	Mempool* getData();
 
-	bool push(Node<T>* node);
-	bool pop();
-
+	void cleanup();
+	void push(int data);
+	int pop();
+	int peek();
 	void print();
 };
 

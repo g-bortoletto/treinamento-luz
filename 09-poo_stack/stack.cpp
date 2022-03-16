@@ -1,65 +1,142 @@
 #include "stack.h"
+#include <stdio.h>
 
-template<class T>
-Stack<T>::Stack()
+Stack::Stack()
 {
-
+	setTop(0);
+	setSize(0);
+	setData(nullptr);
 }
 
-template<class T>
-Stack<T>::~Stack()
+Stack::~Stack()
 {
-	Node<T>* node = m_top;
-	Node<T>* previous = nullptr;
-	while (node)
+	cleanup();
+}
+
+void Stack::setTop(int *top)
+{
+	m_top = top;
+}
+
+void Stack::setSize(unsigned size)
+{
+	m_size = size;
+}
+
+void Stack::setData(Mempool *data)
+{
+	m_data = data;
+}
+
+int *Stack::getTop()
+{
+	return m_top;
+}
+
+unsigned Stack::getSize()
+{
+	return m_size;
+}
+
+Mempool *Stack::getData()
+{
+	return m_data;
+}
+
+void Stack::cleanup()
+{
+	Mempool *previous = 0;
+	Mempool *pool = this->getData();
+
+	while (pool->getNext())
 	{
-		previous = node;
-		node = node->getNext();
-		if (previous)
-		{
-			delete previous;
-		}
+		previous = pool;
+		pool = pool->getNext();
+		delete previous;
+	}
+
+	if (pool)
+	{
+		delete pool;
 	}
 }
 
-template<class T>
-void Stack<T>::setTop(const Node<T>* top)
+void Stack::push(int data)
 {
-
+	Mempool *pool = getData();
+	if (!pool)
+	{
+		pool = new Mempool();
+		setData(pool);
+	}
+	else
+	{
+		while (pool->getNext())
+		{
+			pool->setNext(pool->getNext());
+		}
+		if (pool->getLastIndex() >= POOL_SIZE - 1)
+		{
+			Mempool *new_pool = new Mempool();
+			pool->setNext(new_pool);
+			pool->setNext(pool->getNext());
+		}
+	}
+	pool->setLastIndex(pool->getLastIndex() + 1);
+	pool->getData()[pool->getLastIndex()] = data;
+	setTop(&pool->getData()[pool->getLastIndex()]);
+	setSize(getSize() + 1);
 }
 
-template<class T>
-Node<T>* Stack<T>::getTop() const
+int Stack::pop()
 {
+	if (!getSize())
+	{
+		return 0;
+	}
+	Mempool *previous = 0;
+	Mempool *pool = getData();
+	while (pool->getNext())
+	{
+		previous = pool;
+		pool->setNext(pool->getNext());
+	}
+	int result = pool->getData()[pool->getLastIndex()];
+	pool->getData()[pool->getLastIndex()];
+	pool->setLastIndex(pool->getLastIndex() - 1);
 
+	if (pool->getLastIndex() < 0 && previous)
+	{
+		previous->getNext()->setNext(0);
+		delete (pool);
+	}
+	if (previous)
+	{
+		setTop(&previous->getData()[previous->getLastIndex()]);
+	}
+	else
+	{
+		setTop(&pool->getData()[pool->getLastIndex()]);
+	}
+	setSize(getSize() - 1);
+	return result;
 }
 
-template<class T>
-void Stack<T>::setSize(const unsigned size)
+int Stack::peek()
 {
-
+	return *getTop();
 }
 
-template<class T>
-unsigned Stack<T>::getSize() const
+void Stack::print()
 {
+	if (!this || !this->getData())
+	{
+		return;
+	}
 
-}
-
-template<class T>
-bool Stack<T>::push(Node<T>* node)
-{
-
-}
-
-template<class T>
-bool Stack<T>::pop()
-{
-
-}
-
-template<class T>
-void Stack<T>::print()
-{
-
+	for (int i = 0; i < getSize(); ++i)
+	{
+		fprintf(stdout, "%d ", getData()->getData()[i]);
+	}
+	fprintf(stdout, "\n");
 }
