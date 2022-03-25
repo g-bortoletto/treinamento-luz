@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.ObjectModel;
+
+namespace SistemaEscola.Model
+{
+	public class Pessoa
+	{
+		protected int _id;
+		protected DateTime _dataNascimento = DateTime.Now;
+		protected string _nome = string.Empty;
+		protected string _sobrenome = string.Empty;
+
+		public int Id { get { return _id;} }
+		public DateTime DataNascimento { get { return _dataNascimento; } set { _dataNascimento = value;} }
+		public string Nome { get { return _nome;} set { _nome = value;} }
+		public string Sobrenome { get { return _sobrenome;} set { _sobrenome = value;} }
+
+		public Pessoa()
+		{
+		}
+
+		public void InserirEm(Collection<Pessoa> lista)
+		{
+			lista.Add(this);
+		}
+
+		public void SairDe(Collection<Pessoa> lista)
+		{
+			lista.Remove(this);
+		}
+	}
+}
