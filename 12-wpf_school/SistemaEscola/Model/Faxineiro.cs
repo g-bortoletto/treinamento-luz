@@ -1,6 +1,6 @@
 ﻿namespace SistemaEscola.Model
 {
-	internal class Faxineiro : Pessoa
+	public class Faxineiro : Pessoa
 	{
 		private float _salario;
 

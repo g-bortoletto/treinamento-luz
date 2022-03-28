@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SistemaEscola.Utils;
+using System;
 using System.Collections.ObjectModel;
 
 namespace SistemaEscola.Model
@@ -19,14 +20,22 @@ namespace SistemaEscola.Model
 		{
 		}
 
-		public void InserirEm(Collection<Pessoa> lista)
+		public void InserirEm(Collection<Pessoa> lista, IDbCrud bd = null)
 		{
 			lista.Add(this);
+			if (bd != null)
+            {
+				bd.Inserir(this, GetType());
+            }
 		}
 
-		public void SairDe(Collection<Pessoa> lista)
+		public void SairDe(Collection<Pessoa> lista, IDbCrud bd = null)
 		{
 			lista.Remove(this);
+			if (bd != null)
+            {
+				bd.Remover(this);
+            }
 		}
 	}
 }

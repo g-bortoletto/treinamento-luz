@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SistemaEscola.Model
 {
-	internal class Professor : Pessoa
+	public class Professor : Pessoa
 	{
 		private float _salario;
 		private string _disciplina = string.Empty;

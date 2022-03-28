@@ -6,9 +6,10 @@ using System.Collections.ObjectModel;
 
 namespace SistemaEscola.ViewModel
 {
-	internal class MainViewModel : Observavel, IDbCrud
+	internal class MainViewModel : Observavel
 	{
-		private SistemaEscola.Model.SistemaEscola _se;
+		private Model.SistemaEscola _se;
+		private IDbCrud _bancoDeDados;
 
 		public ObservableCollection<Pessoa> Pessoas { get { return _se.Pessoas; } }
 
@@ -24,6 +25,8 @@ namespace SistemaEscola.ViewModel
 		public MainViewModel()
 		{
 			_se = new SistemaEscola.Model.SistemaEscola();
+			_bancoDeDados = new PostgreSql("localhost", "postgres", "password", "escola", "5432");
+			_bancoDeDados.CarregarDados(_se.Pessoas);
 
 			AbrirFormularioAluno = new ExecutarComando((_) =>
 			{
@@ -34,6 +37,7 @@ namespace SistemaEscola.ViewModel
 				formulario.ShowDialog();
 				
 				_se.AdicionarPessoa(nova);
+				_bancoDeDados.Inserir(nova, typeof(Aluno));
 			});
 
 			AbrirFormularioProfessor = new ExecutarComando((_) =>
@@ -45,6 +49,7 @@ namespace SistemaEscola.ViewModel
 				formulario.ShowDialog();
 
 				_se.AdicionarPessoa(nova);
+				_bancoDeDados.Inserir(nova, typeof(Professor));
 			});
 
 			AbrirFormularioFaxineiro = new ExecutarComando((_) =>
@@ -56,6 +61,7 @@ namespace SistemaEscola.ViewModel
 				formulario.ShowDialog();
 
 				_se.AdicionarPessoa(nova);
+				_bancoDeDados.Inserir(nova, typeof(Faxineiro));
 			});
 
 			RemoverPessoa = new ExecutarComando((_) =>
@@ -63,6 +69,7 @@ namespace SistemaEscola.ViewModel
 				if (PessoaSelecionada != null)
 				{
 					PessoaSelecionada.SairDe(Pessoas);
+					_bancoDeDados.Remover(PessoaSelecionada);
 					PropriedadeMudou(nameof(Pessoas));
 				}
 			});
