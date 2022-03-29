@@ -1,0 +1,1 @@
+cat ./data/dump.sql | docker exec -i sistema_escola_postgres psql -U postgres
