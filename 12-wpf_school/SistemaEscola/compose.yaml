@@ -3,7 +3,7 @@
     container_name: sistema_escola_postgres
     image: postgres
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:password}
+      POSTGRES_PASSWORD: password
     volumes:
       - postgres:/data/postgres
     ports:
@@ -16,8 +16,8 @@
     container_name: sistema_escola_pgadmin
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:postgres@postgres.sql}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:password}
+      PGADMIN_DEFAULT_EMAIL: postgres@postgres.sql
+      PGADMIN_DEFAULT_PASSWORD: password
     volumes:
       - pgadmin:/var/lib/pgadmin
 

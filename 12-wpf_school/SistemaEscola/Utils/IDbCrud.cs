@@ -1,5 +1,6 @@
 ﻿using SistemaEscola.Model;
 using System;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace SistemaEscola.Utils
 		void Desconectar();
 
 		void Inserir(Pessoa pessoa, Type typeOfPessoa);
-		void Procurar(Pessoa pessoa);
+		void CarregarDados(Collection<Pessoa> cp);
 		void Editar(Pessoa pessoa, Pessoa atualizada);
 		void Remover(Pessoa pessoa);
 	}

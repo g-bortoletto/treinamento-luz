@@ -68,8 +68,8 @@ namespace SistemaEscola.ViewModel
 			{
 				if (PessoaSelecionada != null)
 				{
-					PessoaSelecionada.SairDe(Pessoas);
 					_bancoDeDados.Remover(PessoaSelecionada);
+					PessoaSelecionada.SairDe(Pessoas);
 					PropriedadeMudou(nameof(Pessoas));
 				}
 			});
@@ -88,13 +88,21 @@ namespace SistemaEscola.ViewModel
 						FormularioAluno form = new FormularioAluno();
 						form.DataContext = editado;
 						form.ShowDialog();
-						for (int i = 0; i < Pessoas.Count; ++i)
+						if (!string.IsNullOrEmpty(editado.Nome) &&
+							!string.IsNullOrEmpty(editado.Sobrenome))
+
+
 						{
-							if (Pessoas[i] == PessoaSelecionada)
+							for (int i = 0; i < Pessoas.Count; ++i)
 							{
-								Pessoas.RemoveAt(i);
-								Pessoas.Insert(i, editado);
+								if (Pessoas[i] == PessoaSelecionada)
+								{
+									Pessoas.RemoveAt(i);
+									Pessoas.Insert(i, editado);
+								}
 							}
+							_bancoDeDados.Remover(aluno);
+							_bancoDeDados.Inserir(editado, typeof(Aluno));
 						}
 					}
 
@@ -104,13 +112,21 @@ namespace SistemaEscola.ViewModel
 						FormularioProfessor form = new FormularioProfessor();
 						form.DataContext = editado;
 						form.ShowDialog();
-						for (int i = 0; i < Pessoas.Count; ++i)
+						if (!string.IsNullOrEmpty(editado.Nome) &&
+							!string.IsNullOrEmpty(editado.Sobrenome))
+
+
 						{
-							if (Pessoas[i] == PessoaSelecionada)
+							for (int i = 0; i < Pessoas.Count; ++i)
 							{
-								Pessoas.RemoveAt(i);
-								Pessoas.Insert(i, editado);
+								if (Pessoas[i] == PessoaSelecionada)
+								{
+									Pessoas.RemoveAt(i);
+									Pessoas.Insert(i, editado);
+								}
 							}
+							_bancoDeDados.Remover(professor);
+							_bancoDeDados.Inserir(editado, typeof(Professor));
 						}
 					}
 
@@ -120,13 +136,21 @@ namespace SistemaEscola.ViewModel
 						FormularioFaxineiro form = new FormularioFaxineiro();
 						form.DataContext = editado;
 						form.ShowDialog();
-						for (int i = 0; i < Pessoas.Count; ++i)
+						if (!string.IsNullOrEmpty(editado.Nome) &&
+							!string.IsNullOrEmpty(editado.Sobrenome))
+
+
 						{
-							if (Pessoas[i] == PessoaSelecionada)
+							for (int i = 0; i < Pessoas.Count; ++i)
 							{
-								Pessoas.RemoveAt(i);
-								Pessoas.Insert(i, editado);
+								if (Pessoas[i] == PessoaSelecionada)
+								{
+									Pessoas.RemoveAt(i);
+									Pessoas.Insert(i, editado);
+								}
 							}
+							_bancoDeDados.Remover(faxineiro);
+							_bancoDeDados.Inserir(editado, typeof(Faxineiro));
 						}
 					}
 				}

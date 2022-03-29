@@ -50,7 +50,7 @@ namespace SistemaEscola.Utils
             NpgsqlCommand cmd = null;
             if (typeOfPessoa == typeof(Aluno))
             {
-                cmd = new NpgsqlCommand($"INSERT INTO \"Alunos\" (nome, sobrenome, datanascimento, matricula) VALUES (" +
+                cmd = new NpgsqlCommand($"INSERT INTO \"alunos\" (nome, sobrenome, data_nascimento, matricula) VALUES (" +
                     $"'{pessoa.Nome}', " +
                     $"'{pessoa.Sobrenome}', " +
                     $"'{new NpgsqlDateTime(pessoa.DataNascimento)}', " +
@@ -59,7 +59,7 @@ namespace SistemaEscola.Utils
             }
             else if (typeOfPessoa == typeof(Professor))
             {
-                cmd = new NpgsqlCommand($"INSERT INTO \"Professores\" (nome, sobrenome, datanascimento, salario, disciplina) VALUES (" +
+                cmd = new NpgsqlCommand($"INSERT INTO \"professores\" (nome, sobrenome, data_nascimento, salario, disciplina) VALUES (" +
                     $"'{pessoa.Nome}', " +
                     $"'{pessoa.Sobrenome}', " +
                     $"'{new NpgsqlDateTime(pessoa.DataNascimento)}', " +
@@ -68,7 +68,7 @@ namespace SistemaEscola.Utils
             }
             else if (typeOfPessoa == typeof(Faxineiro))
             {
-                cmd = new NpgsqlCommand($"INSERT INTO \"Faxineiros\" (nome, sobrenome, datanascimento, salario) VALUES (" +
+                cmd = new NpgsqlCommand($"INSERT INTO \"faxineiros\" (nome, sobrenome, data_nascimento, salario) VALUES (" +
                     $"'{pessoa.Nome}', " +
                     $"'{pessoa.Sobrenome}', " +
                     $"'{new NpgsqlDateTime(pessoa.DataNascimento)}', " +
@@ -90,23 +90,28 @@ namespace SistemaEscola.Utils
                 return;
             }
 
-            NpgsqlCommand cmd = new NpgsqlCommand($"REMOVE FROM Alunos WHERE " +
-                $"Nome='{pessoa.Nome}' AND " +
-                $"Sobrenome='{pessoa.Sobrenome}'", _conexao);
+            NpgsqlCommand cmd = new NpgsqlCommand($"DELETE FROM \"alunos\" WHERE " +
+                $"nome='{pessoa.Nome}' AND " +
+                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
             cmd.ExecuteNonQuery();
-            cmd = new NpgsqlCommand($"REMOVE FROM Professores WHERE " +
-                $"Nome='{pessoa.Nome}' AND " +
-                $"Sobrenome='{pessoa.Sobrenome}'", _conexao);
+            cmd.Dispose();
+
+            cmd = new NpgsqlCommand($"DELETE FROM \"professores\" WHERE " +
+                $"nome='{pessoa.Nome}' AND " +
+                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
             cmd.ExecuteNonQuery();
-            cmd = new NpgsqlCommand($"REMOVE FROM Faxineiros WHERE " +
-                $"Nome='{pessoa.Nome}' AND " +
-                $"Sobrenome='{pessoa.Sobrenome}'", _conexao);
+            cmd.Dispose();
+
+            cmd = new NpgsqlCommand($"DELETE FROM \"faxineiros\" WHERE " +
+                $"nome='{pessoa.Nome}' AND " +
+                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
             cmd.ExecuteNonQuery();
+            cmd.Dispose();
         }
 
         public void CarregarDados(Collection<Pessoa> list)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM \"Alunos\";", _conexao);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM \"alunos\";", _conexao);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
@@ -114,8 +119,41 @@ namespace SistemaEscola.Utils
                 Aluno al = new Aluno();
                 al.Nome = reader.GetString(reader.GetOrdinal("nome"));
                 al.Sobrenome = reader.GetString(reader.GetOrdinal("sobrenome"));
-                al.DataNascimento = (DateTime)reader.GetDate(reader.GetOrdinal("datanascimento"));
+                al.DataNascimento = (DateTime)reader.GetDate(reader.GetOrdinal("data_nascimento"));
                 al.Matricula = reader.GetInt32(reader.GetOrdinal("matricula"));
+                list.Add(al);
+            }
+
+            reader.Close();
+            cmd.Dispose();
+
+            cmd = new NpgsqlCommand("SELECT * FROM \"faxineiros\";", _conexao);
+            reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Faxineiro al = new Faxineiro();
+                al.Nome = reader.GetString(reader.GetOrdinal("nome"));
+                al.Sobrenome = reader.GetString(reader.GetOrdinal("sobrenome"));
+                al.DataNascimento = (DateTime)reader.GetDate(reader.GetOrdinal("data_nascimento"));
+                al.Salario = reader.GetFloat(reader.GetOrdinal("salario"));
+                list.Add(al);
+            }
+
+            reader.Close();
+            cmd.Dispose();
+
+            cmd = new NpgsqlCommand("SELECT * FROM \"professores\";", _conexao);
+            reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Professor al = new Professor();
+                al.Nome = reader.GetString(reader.GetOrdinal("nome"));
+                al.Sobrenome = reader.GetString(reader.GetOrdinal("sobrenome"));
+                al.DataNascimento = (DateTime)reader.GetDate(reader.GetOrdinal("data_nascimento"));
+                al.Salario = reader.GetFloat(reader.GetOrdinal("salario"));
+                al.Disciplina = reader.GetString(reader.GetOrdinal("disciplina"));
                 list.Add(al);
             }
 
