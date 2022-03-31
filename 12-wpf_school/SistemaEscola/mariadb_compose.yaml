@@ -1,0 +1,28 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  db:
+    image: mariadb
+    restart: always
+    networks:
+      - mariadb
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mariadb:/docker-entrypoint-initdb.d
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - mariadb
+    ports:
+      - 8080:8080
+      
+networks:
+  mariadb:
+    driver: bridge

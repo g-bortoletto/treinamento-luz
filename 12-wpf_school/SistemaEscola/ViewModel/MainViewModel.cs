@@ -24,8 +24,9 @@ namespace SistemaEscola.ViewModel
 
 		public MainViewModel()
 		{
-			_se = new SistemaEscola.Model.SistemaEscola();
-			_bancoDeDados = new PostgreSql("localhost", "postgres", "password", "escola", "5432");
+			_se = new Model.SistemaEscola();
+			//_bancoDeDados = new PostgreSql("localhost", "root", "example", "escola");
+			_bancoDeDados = new MariaDb("localhost", "root", "example", "escola");
 			_bancoDeDados.CarregarDados(_se.Pessoas);
 
 			AbrirFormularioAluno = new ExecutarComando((_) =>

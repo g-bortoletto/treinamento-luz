@@ -9,7 +9,7 @@ CREATE TABLE public.pessoas (
     data_nascimento date
 );
 
-ALTER TABLE public.pessoas OWNER TO postgres;
+ALTER TABLE public.pessoas OWNER TO root;
 
 --
 -- Name: alunos; Type: TABLE; Schema: public; Owner: postgres
@@ -21,7 +21,7 @@ CREATE TABLE public.alunos (
 INHERITS (public.pessoas);
 
 
-ALTER TABLE public.alunos OWNER TO postgres;
+ALTER TABLE public.alunos OWNER TO root;
 
 --
 -- Name: faxineiros; Type: TABLE; Schema: public; Owner: postgres
@@ -33,7 +33,7 @@ CREATE TABLE public.faxineiros (
 INHERITS (public.pessoas);
 
 
-ALTER TABLE public.faxineiros OWNER TO postgres;
+ALTER TABLE public.faxineiros OWNER TO root;
 
 --
 -- Name: pessoas_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -48,7 +48,7 @@ CREATE SEQUENCE public.pessoas_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.pessoas_id_seq OWNER TO postgres;
+ALTER TABLE public.pessoas_id_seq OWNER TO root;
 
 --
 -- Name: pessoas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -68,7 +68,7 @@ CREATE TABLE public.professores (
 INHERITS (public.pessoas);
 
 
-ALTER TABLE public.professores OWNER TO postgres;
+ALTER TABLE public.professores OWNER TO root;
 
 --
 -- Name: alunos id; Type: DEFAULT; Schema: public; Owner: postgres
