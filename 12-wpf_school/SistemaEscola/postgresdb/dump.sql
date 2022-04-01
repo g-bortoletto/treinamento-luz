@@ -3,7 +3,7 @@ CREATE DATABASE escola;
 \connect escola
 
 CREATE TABLE public.pessoas (
-    id integer NOT NULL,
+    id character varying NOT NULL,
     nome character varying NOT NULL,
     sobrenome character varying NOT NULL,
     data_nascimento date

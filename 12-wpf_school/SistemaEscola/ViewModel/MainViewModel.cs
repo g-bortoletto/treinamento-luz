@@ -151,8 +151,8 @@ namespace SistemaEscola.ViewModel
         private void Init()
         {
             _se = new Model.SistemaEscola();
-            //_bancoDeDados = new PostgreSql("localhost", "root", "example", "escola");
-            _bancoDeDados = new MariaDb("localhost", "root", "example", "escola");
+            _bancoDeDados = new PostgreSql("localhost", "root", "example", "escola");
+            //_bancoDeDados = new MariaDb("localhost", "root", "example", "escola");
             _bancoDeDados.CarregarDados(_se.Pessoas);
         }
 
