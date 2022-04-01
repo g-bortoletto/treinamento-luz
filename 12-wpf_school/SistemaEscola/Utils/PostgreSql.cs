@@ -3,13 +3,12 @@ using NpgsqlTypes;
 using SistemaEscola.Model;
 using System;
 using System.Collections.ObjectModel;
-using System.Data;
 
 namespace SistemaEscola.Utils
 {
     public class PostgreSql : IDbCrud
     {
-        private NpgsqlConnection _conexao;
+        private readonly NpgsqlConnection _conexao;
 
         public PostgreSql(string host, string usuario, string senha, string bancoDeDados)
         {
@@ -23,85 +22,6 @@ namespace SistemaEscola.Utils
             _conexao = new NpgsqlConnection(str.ConnectionString);
 
             Conectar();
-        }
-
-        public void Conectar()
-        {
-            _conexao.Open();
-        }
-
-        public void Desconectar()
-        {
-            _conexao.Close();
-        }
-
-        public void Editar(Pessoa pessoa, Pessoa atualizada)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Inserir(Pessoa pessoa, Type typeOfPessoa)
-        {
-            NpgsqlCommand cmd = null;
-            if (typeOfPessoa == typeof(Aluno))
-            {
-                cmd = new NpgsqlCommand($"INSERT INTO \"alunos\" (nome, sobrenome, data_nascimento, matricula) VALUES (" +
-                    $"'{pessoa.Nome}', " +
-                    $"'{pessoa.Sobrenome}', " +
-                    $"'{new NpgsqlDateTime(pessoa.DataNascimento)}', " +
-                    $"'{(pessoa as Aluno).Matricula}');", _conexao);
-
-            }
-            else if (typeOfPessoa == typeof(Professor))
-            {
-                cmd = new NpgsqlCommand($"INSERT INTO \"professores\" (nome, sobrenome, data_nascimento, salario, disciplina) VALUES (" +
-                    $"'{pessoa.Nome}', " +
-                    $"'{pessoa.Sobrenome}', " +
-                    $"'{new NpgsqlDateTime(pessoa.DataNascimento)}', " +
-                    $"'{(pessoa as Professor).Salario}', " +
-                    $"'{(pessoa as Professor).Disciplina}');", _conexao);
-            }
-            else if (typeOfPessoa == typeof(Faxineiro))
-            {
-                cmd = new NpgsqlCommand($"INSERT INTO \"faxineiros\" (nome, sobrenome, data_nascimento, salario) VALUES (" +
-                    $"'{pessoa.Nome}', " +
-                    $"'{pessoa.Sobrenome}', " +
-                    $"'{new NpgsqlDateTime(pessoa.DataNascimento)}', " +
-                    $"'{(pessoa as Faxineiro).Salario}');", _conexao);
-            }
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public void Procurar(Pessoa pessoa)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Remover(Pessoa pessoa)
-        {
-            if (pessoa == null)
-            {
-                return;
-            }
-
-            NpgsqlCommand cmd = new NpgsqlCommand($"DELETE FROM \"alunos\" WHERE " +
-                $"nome='{pessoa.Nome}' AND " +
-                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
-
-            cmd = new NpgsqlCommand($"DELETE FROM \"professores\" WHERE " +
-                $"nome='{pessoa.Nome}' AND " +
-                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
-
-            cmd = new NpgsqlCommand($"DELETE FROM \"faxineiros\" WHERE " +
-                $"nome='{pessoa.Nome}' AND " +
-                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
         }
 
         public void CarregarDados(Collection<Pessoa> list)
@@ -154,6 +74,100 @@ namespace SistemaEscola.Utils
 
             reader.Close();
             cmd.Dispose();
+        }
+
+        public void Conectar()
+        {
+            _conexao.Open();
+        }
+
+        public void Desconectar()
+        {
+            _conexao.Close();
+        }
+
+        public void Editar(Pessoa pessoa, Pessoa atualizada)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Inserir(Pessoa pessoa)
+        {
+            NpgsqlCommand cmd = null;
+            if (pessoa is Aluno aluno)
+            {
+                cmd = ComandoInserirAluno(aluno);
+
+            }
+            else if (pessoa is Professor professor)
+            {
+                cmd = ComandoInserirProfessor(professor);
+            }
+            else if (pessoa is Faxineiro faxineiro)
+            {
+                cmd = ComandoInserirFaxineiro(faxineiro);
+            }
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public void Procurar(Pessoa pessoa)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Remover(Pessoa pessoa)
+        {
+            if (pessoa == null)
+            {
+                return;
+            }
+
+            NpgsqlCommand cmd = new NpgsqlCommand($"DELETE FROM \"alunos\" WHERE " +
+                $"nome='{pessoa.Nome}' AND " +
+                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+
+            cmd = new NpgsqlCommand($"DELETE FROM \"professores\" WHERE " +
+                $"nome='{pessoa.Nome}' AND " +
+                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+
+            cmd = new NpgsqlCommand($"DELETE FROM \"faxineiros\" WHERE " +
+                $"nome='{pessoa.Nome}' AND " +
+                $"sobrenome='{pessoa.Sobrenome}'", _conexao);
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+        }
+
+        private NpgsqlCommand ComandoInserirAluno(Aluno aluno)
+        {
+            return new NpgsqlCommand($"INSERT INTO \"alunos\" (nome, sobrenome, data_nascimento, matricula) VALUES (" +
+                $"'{aluno.Nome}', " +
+                $"'{aluno.Sobrenome}', " +
+                $"'{new NpgsqlDateTime(aluno.DataNascimento)}', " +
+                $"'{aluno.Matricula}');", _conexao);
+        }
+
+        private NpgsqlCommand ComandoInserirFaxineiro(Faxineiro faxineiro)
+        {
+            return new NpgsqlCommand($"INSERT INTO \"faxineiros\" (nome, sobrenome, data_nascimento, salario) VALUES (" +
+                $"'{faxineiro.Nome}', " +
+                $"'{faxineiro.Sobrenome}', " +
+                $"'{new NpgsqlDateTime(faxineiro.DataNascimento)}', " +
+                $"'{faxineiro.Salario}');", _conexao);
+        }
+
+        private NpgsqlCommand ComandoInserirProfessor(Professor professor)
+        {
+            return new NpgsqlCommand($"INSERT INTO \"professores\" (nome, sobrenome, data_nascimento, salario, disciplina) VALUES (" +
+                $"'{professor.Nome}', " +
+                $"'{professor.Sobrenome}', " +
+                $"'{new NpgsqlDateTime(professor.DataNascimento)}', " +
+                $"'{professor.Salario}', " +
+                $"'{professor.Disciplina}');", _conexao);
         }
     }
 }

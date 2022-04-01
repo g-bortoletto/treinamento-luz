@@ -22,8 +22,8 @@
 					<MenuItem Header="_Faxineiro(a)" Command="{Binding Path=AbrirFormularioFaxineiro}"/>
 				</MenuItem>
 
-				<MenuItem Header="_Remover" Command="{Binding Path=RemoverPessoa}"/>
-				<MenuItem Header="_Editar" Command="{Binding Path=AtualizarPessoa}"/>
+				<MenuItem Header="_Remover" Command="{Binding Path=ComandoRemoverPessoa}"/>
+				<MenuItem Header="_Editar" Command="{Binding Path=ComandoAtualizarPessoa}"/>
 			</MenuItem>
 		</Menu>
 
@@ -33,7 +33,8 @@
 		SelectedItem="{Binding Path=PessoaSelecionada}">
 			<ListView.View>
 				<GridView>
-					<GridViewColumn Header="Nome" DisplayMemberBinding="{Binding Path=Nome}"/>
+                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
+                    <GridViewColumn Header="Nome" DisplayMemberBinding="{Binding Path=Nome}"/>
 					<GridViewColumn Header="Sobrenome" DisplayMemberBinding="{Binding Path=Sobrenome}"/>
 					<GridViewColumn Header="Data de Nascimento" DisplayMemberBinding="{Binding Path=DataNascimento}"/>
 				</GridView>

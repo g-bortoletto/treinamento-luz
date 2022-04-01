@@ -16,19 +16,20 @@ namespace SistemaEscola.Model
 		public string Nome { get { return _nome;} set { _nome = value;} }
 		public string Sobrenome { get { return _sobrenome;} set { _sobrenome = value;} }
 
-		protected void Init(string nome = "",
-							string sobrenome = "")
+		protected void Init(string id = null)
         {
-			_id = Guid.NewGuid().ToString();
-			_nome = nome;
-			_sobrenome = sobrenome;
+			_id = id ?? Guid.NewGuid().ToString();
         }
 
 		public Pessoa()
 		{
 			Init();
-			_dataNascimento = DateTime.Now;
 		}
+
+		public Pessoa(string id)
+        {
+			Init(id);
+        }
 
 
 		public void InserirEm(Collection<Pessoa> lista, IDbCrud bd = null)
@@ -36,7 +37,7 @@ namespace SistemaEscola.Model
 			lista.Add(this);
 			if (bd != null)
             {
-				bd.Inserir(this, GetType());
+				bd.Inserir(this);
             }
 		}
 

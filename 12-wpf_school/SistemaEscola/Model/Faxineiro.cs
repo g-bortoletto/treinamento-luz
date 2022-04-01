@@ -11,31 +11,6 @@ namespace SistemaEscola.Model
 
 		public Faxineiro() : base() { }
 
-		private void Init(string nome,
-						  string sobrenome,
-						  DateTime dataNascimento,
-						  float salario)
-		{
-			Nome = nome;
-			Sobrenome = sobrenome;
-			DataNascimento = dataNascimento;
-			Salario = salario;
-		}
-
-		public Faxineiro(Pessoa pessoa, float salario) : base()
-		{
-			Init(pessoa.Nome,
-				 pessoa.Sobrenome,
-				 pessoa.DataNascimento,
-				 salario);
-		}
-
-		public Faxineiro(string nome,
-						 string sobrenome,
-						 DateTime dataNascimento,
-						 float salario) : base()
-        {
-			Init(nome, sobrenome, dataNascimento, salario);
-        }
+		public Faxineiro(string id) : base(id) { }
 	}
 }

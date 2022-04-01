@@ -30,6 +30,7 @@
 					Grid.Row="0"
 					Grid.Column="1"
 					VerticalAlignment="Center"
+					x:Name="CaixaNome"
 					Text="{Binding Nome}"></TextBox>
 
 			<Label
@@ -39,6 +40,7 @@
 					Grid.Row="1"
 					Grid.Column="1"
 					VerticalAlignment="Center"
+					x:Name="CaixaSobrenome"
 					Text="{Binding Sobrenome}"></TextBox>
 
 			<Label
@@ -48,6 +50,7 @@
 					Grid.Row="2"
 					Grid.Column="1"
 					VerticalAlignment="Center"
+					x:Name="CaixaDataNascimento"
 					SelectedDate="{Binding DataNascimento}"></DatePicker>
 
 			<Label
@@ -57,6 +60,7 @@
 					Grid.Row="3"
 					Grid.Column="1"
 					VerticalAlignment="Center"
+					x:Name="CaixaMatricula"
 					Text="{Binding Matricula}"></TextBox>
 
 		</Grid>

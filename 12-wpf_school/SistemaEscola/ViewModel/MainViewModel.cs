@@ -68,83 +68,86 @@ namespace SistemaEscola.ViewModel
             _se.AdicionarPessoa(nova as Professor, _bancoDeDados);
         }
 
-        private void AtualizarPessoa()
+        private void AtualizarAluno()
         {
-            if (PessoaSelecionada == null)
-            {
-                return;
-            }
+            Aluno editado = PessoaSelecionada as Aluno;
+            FormularioAluno form = new FormularioAluno();
+            form.DataContext = editado;
+            form.ShowDialog();
+            if (!string.IsNullOrEmpty(editado.Nome) &&
+                !string.IsNullOrEmpty(editado.Sobrenome))
 
-            if (PessoaSelecionada is Aluno aluno)
             {
-                Pessoa editado = new Aluno();
-                FormularioAluno form = new FormularioAluno();
-                form.DataContext = editado;
-                form.ShowDialog();
-                if (!string.IsNullOrEmpty(editado.Nome) &&
-                    !string.IsNullOrEmpty(editado.Sobrenome))
-
+                foreach (Pessoa pessoa in Pessoas)
                 {
-                    for (int i = 0; i < Pessoas.Count; ++i)
+                    if (pessoa.Id == editado.Id)
                     {
-                        if (Pessoas[i] == PessoaSelecionada)
-                        {
-                            Pessoas.RemoveAt(i);
-                            Pessoas.Insert(i, editado);
-                        }
+                        pessoa.Nome = editado.Nome;
+                        pessoa.Sobrenome = editado.Sobrenome;
+                        pessoa.DataNascimento = editado.DataNascimento;
+                        (pessoa as Aluno).Matricula = editado.Matricula;
                     }
-                    _bancoDeDados.Remover(aluno);
-                    _bancoDeDados.Inserir(editado);
                 }
-            }
-
-            if (PessoaSelecionada is Professor professor)
-            {
-                Pessoa editado = new Professor();
-                FormularioProfessor form = new FormularioProfessor();
-                form.DataContext = editado;
-                form.ShowDialog();
-                if (!string.IsNullOrEmpty(editado.Nome) &&
-                    !string.IsNullOrEmpty(editado.Sobrenome))
-
-                {
-                    for (int i = 0; i < Pessoas.Count; ++i)
-                    {
-                        if (Pessoas[i] == PessoaSelecionada)
-                        {
-                            Pessoas.RemoveAt(i);
-                            Pessoas.Insert(i, editado);
-                        }
-                    }
-                    _bancoDeDados.Remover(professor);
-                    _bancoDeDados.Inserir(editado);
-                }
-            }
-
-            if (PessoaSelecionada is Faxineiro faxineiro)
-            {
-                Pessoa editado = new Faxineiro();
-                FormularioFaxineiro form = new FormularioFaxineiro();
-                form.DataContext = editado;
-                form.ShowDialog();
-                if (!string.IsNullOrEmpty(editado.Nome) &&
-                    !string.IsNullOrEmpty(editado.Sobrenome))
-
-                {
-                    for (int i = 0; i < Pessoas.Count; ++i)
-                    {
-                        if (Pessoas[i] == PessoaSelecionada)
-                        {
-                            Pessoas.RemoveAt(i);
-                            Pessoas.Insert(i, editado);
-                        }
-                    }
-                    _bancoDeDados.Remover(faxineiro);
-                    _bancoDeDados.Inserir(editado);
-                }
+                _bancoDeDados.Editar(PessoaSelecionada as Aluno, editado);
             }
         }
 
+        private void AtualizarFaxineiro()
+        {
+            Faxineiro editado = PessoaSelecionada as Faxineiro;
+            FormularioFaxineiro form = new FormularioFaxineiro();
+            form.DataContext = editado;
+            form.ShowDialog();
+            if (!string.IsNullOrEmpty(editado.Nome) &&
+                !string.IsNullOrEmpty(editado.Sobrenome))
+
+            {
+                foreach (Pessoa pessoa in Pessoas)
+                {
+                    if (pessoa.Id == editado.Id)
+                    {
+                        pessoa.Nome = editado.Nome;
+                        pessoa.Sobrenome = editado.Sobrenome;
+                        pessoa.DataNascimento = editado.DataNascimento;
+                        (pessoa as Faxineiro).Salario = editado.Salario;
+                    }
+                }
+                _bancoDeDados.Editar(PessoaSelecionada as Faxineiro, editado);
+            }
+        }
+
+        private void AtualizarPessoa()
+        {
+            if (PessoaSelecionada == null) { return; }
+            if (PessoaSelecionada is Aluno) { AtualizarAluno(); }
+            if (PessoaSelecionada is Professor) { AtualizarProfessor(); }
+            if (PessoaSelecionada is Faxineiro) { AtualizarFaxineiro(); }
+        }
+
+        private void AtualizarProfessor()
+        {
+            Professor editado = PessoaSelecionada as Professor;
+            FormularioProfessor form = new FormularioProfessor();
+            form.DataContext = editado;
+            form.ShowDialog();
+            if (!string.IsNullOrEmpty(editado.Nome) &&
+                !string.IsNullOrEmpty(editado.Sobrenome))
+
+            {
+                foreach (Pessoa pessoa in Pessoas)
+                {
+                    if (pessoa.Id == editado.Id)
+                    {
+                        pessoa.Nome = editado.Nome;
+                        pessoa.Sobrenome = editado.Sobrenome;
+                        pessoa.DataNascimento = editado.DataNascimento;
+                        (pessoa as Professor).Salario = editado.Salario;
+                        (pessoa as Professor).Disciplina = editado.Disciplina;
+                    }
+                }
+                _bancoDeDados.Editar(PessoaSelecionada as Professor, editado);
+            }
+        }
         private void Init()
         {
             _se = new Model.SistemaEscola();
@@ -157,8 +160,7 @@ namespace SistemaEscola.ViewModel
         {
             if (PessoaSelecionada != null)
             {
-                _bancoDeDados.Remover(PessoaSelecionada);
-                PessoaSelecionada.SairDe(Pessoas);
+                PessoaSelecionada.SairDe(Pessoas, _bancoDeDados);
                 PropriedadeMudou(nameof(Pessoas));
             }
         }
