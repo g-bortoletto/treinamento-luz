@@ -16,10 +16,20 @@ namespace SistemaEscola.Model
 		public string Nome { get { return _nome;} set { _nome = value;} }
 		public string Sobrenome { get { return _sobrenome;} set { _sobrenome = value;} }
 
+		protected void Init(string nome = "",
+							string sobrenome = "")
+        {
+			_id = Guid.NewGuid().ToString();
+			_nome = nome;
+			_sobrenome = sobrenome;
+        }
+
 		public Pessoa()
 		{
-			_id = Guid.NewGuid().ToString();
+			Init();
+			_dataNascimento = DateTime.Now;
 		}
+
 
 		public void InserirEm(Collection<Pessoa> lista, IDbCrud bd = null)
 		{

@@ -8,7 +8,7 @@ namespace SistemaEscola.Utils
 {
     public class MariaDb : IDbCrud
     {
-        private MySqlConnection _conexao;
+        private readonly MySqlConnection _conexao;
 
         public MariaDb(string host, string usuario, string senha, string bancoDeDados)
         {
@@ -44,29 +44,32 @@ namespace SistemaEscola.Utils
             MySqlCommand cmd = null;
             if (typeOfPessoa == typeof(Aluno))
             {
-                cmd = new MySqlCommand($"INSERT INTO alunos (nome, sobrenome, data_nascimento, matricula) VALUES (" +
-                    $"'{pessoa.Nome}', " +
-                    $"'{pessoa.Sobrenome}', " +
-                    $"'{pessoa.DataNascimento.ToString("yyyy-MM-dd HH:mm:ss")}', " +
-                    $"'{(pessoa as Aluno).Matricula}');", _conexao);
+                cmd = new MySqlCommand("INSERT INTO alunos (id, nome, sobrenome, data_nascimento, matricula) VALUES (" +
+                                        $"'{pessoa.Id}', " +
+                                        $"'{pessoa.Nome}', " +
+                                        $"'{pessoa.Sobrenome}', " +
+                                        $"'{pessoa.DataNascimento.ToString("yyyy-MM-dd HH:mm:ss")}', " +
+                                        $"'{(pessoa as Aluno).Matricula}');", _conexao);
 
             }
             else if (typeOfPessoa == typeof(Professor))
             {
-                cmd = new MySqlCommand($"INSERT INTO professores (nome, sobrenome, data_nascimento, salario, disciplina) VALUES (" +
-                    $"'{pessoa.Nome}', " +
-                    $"'{pessoa.Sobrenome}', " +
-                    $"'{pessoa.DataNascimento.ToString("yyyy-MM-dd HH:mm:ss")}', " +
-                    $"'{(pessoa as Professor).Salario}', " +
-                    $"'{(pessoa as Professor).Disciplina}');", _conexao);
+                cmd = new MySqlCommand("INSERT INTO professores (id, nome, sobrenome, data_nascimento, salario, disciplina) VALUES (" +
+                                        $"'{pessoa.Id}', " +
+                                        $"'{pessoa.Nome}', " +
+                                        $"'{pessoa.Sobrenome}', " +
+                                        $"'{pessoa.DataNascimento.ToString("yyyy-MM-dd HH:mm:ss")}', " +
+                                        $"'{(pessoa as Professor).Salario}', " +
+                                        $"'{(pessoa as Professor).Disciplina}');", _conexao);
             }
             else if (typeOfPessoa == typeof(Faxineiro))
             {
-                cmd = new MySqlCommand($"INSERT INTO faxineiros (nome, sobrenome, data_nascimento, salario) VALUES (" +
-                    $"'{pessoa.Nome}', " +
-                    $"'{pessoa.Sobrenome}', " +
-                    $"'{pessoa.DataNascimento.ToString("yyyy-MM-dd HH:mm:ss")}', " +
-                    $"'{(pessoa as Faxineiro).Salario}');", _conexao);
+                cmd = new MySqlCommand("INSERT INTO faxineiros (id, nome, sobrenome, data_nascimento, salario) VALUES (" +
+                                        $"'{pessoa.Id}', " +
+                                        $"'{pessoa.Nome}', " +
+                                        $"'{pessoa.Sobrenome}', " +
+                                        $"'{pessoa.DataNascimento.ToString("yyyy-MM-dd HH:mm:ss")}', " +
+                                        $"'{(pessoa as Faxineiro).Salario}');", _conexao);
             }
 
             cmd.ExecuteNonQuery();

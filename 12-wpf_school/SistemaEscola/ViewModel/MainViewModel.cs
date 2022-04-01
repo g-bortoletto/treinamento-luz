@@ -37,8 +37,7 @@ namespace SistemaEscola.ViewModel
 				formulario.DataContext = nova;
 				formulario.ShowDialog();
 				
-				_se.AdicionarPessoa(nova);
-				_bancoDeDados.Inserir(nova, typeof(Aluno));
+				_se.AdicionarPessoa(nova as Aluno, _bancoDeDados);
 			});
 
 			AbrirFormularioProfessor = new ExecutarComando((_) =>
@@ -49,8 +48,7 @@ namespace SistemaEscola.ViewModel
 				formulario.DataContext = nova;
 				formulario.ShowDialog();
 
-				_se.AdicionarPessoa(nova);
-				_bancoDeDados.Inserir(nova, typeof(Professor));
+				_se.AdicionarPessoa(nova as Professor, _bancoDeDados);
 			});
 
 			AbrirFormularioFaxineiro = new ExecutarComando((_) =>
@@ -62,7 +60,7 @@ namespace SistemaEscola.ViewModel
 				formulario.ShowDialog();
 
 				_se.AdicionarPessoa(nova);
-				_bancoDeDados.Inserir(nova, typeof(Faxineiro));
+				_bancoDeDados.Inserir(nova as Faxineiro, typeof(Faxineiro));
 			});
 
 			RemoverPessoa = new ExecutarComando((_) =>

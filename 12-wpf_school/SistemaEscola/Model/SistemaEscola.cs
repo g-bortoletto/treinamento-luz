@@ -13,16 +13,19 @@ namespace SistemaEscola.Model
 			_pessoas = new ObservableCollection<Pessoa>();
 		}
 
-		public void AdicionarPessoa(Pessoa pessoa)
+		public void AdicionarPessoa(Pessoa pessoa, Utils.IDbCrud bd = null)
 		{
 			if (pessoa != null &&
 				!string.IsNullOrEmpty(pessoa.Nome) &&
 				!string.IsNullOrEmpty(pessoa.Sobrenome))
 			{
-				pessoa.InserirEm(_pessoas);
+				pessoa.InserirEm(_pessoas, bd);
 			}
 		}
-		public void RemoverPessoa(Pessoa pessoa) => pessoa.SairDe(_pessoas);
+		public void RemoverPessoa(Pessoa pessoa, Utils.IDbCrud bd = null) 
+		{
+			pessoa.SairDe(_pessoas, bd); 
+		}
 	}
 
 }
