@@ -1,161 +1,166 @@
-﻿using SistemaEscola.Utils;
-using SistemaEscola.Model;
+﻿using SistemaEscola.Model;
+using SistemaEscola.Utils;
 using SistemaEscola.View;
-using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace SistemaEscola.ViewModel
 {
-	internal class MainViewModel : Observavel
-	{
-		private Model.SistemaEscola _se;
-		private IDbCrud _bancoDeDados;
+    internal class MainViewModel : Observavel
+    {
+        private IDbCrud _bancoDeDados;
+        private Model.SistemaEscola _se;
 
-		public ObservableCollection<Pessoa> Pessoas { get { return _se.Pessoas; } }
+        public MainViewModel()
+        {
+            Init();
 
-		public ICommand AbrirFormularioAluno { get; set; }
-		public ICommand AbrirFormularioProfessor{ get; set; }
-		public ICommand AbrirFormularioFaxineiro { get; set; }
+            AbrirFormularioAluno = new ExecutarComando(delegate { AdicionarAluno(); });
 
-		public Pessoa PessoaSelecionada { get; set; }
+            AbrirFormularioProfessor = new ExecutarComando(delegate { AdicionarProfessor(); });
 
-		public ICommand RemoverPessoa { get; set; }
-		public ICommand AtualizarPessoa { get; set; }
+            AbrirFormularioFaxineiro = new ExecutarComando(delegate { AdicionarFaxineiro(); });
 
-		public MainViewModel()
-		{
-			_se = new Model.SistemaEscola();
-			//_bancoDeDados = new PostgreSql("localhost", "root", "example", "escola");
-			_bancoDeDados = new MariaDb("localhost", "root", "example", "escola");
-			_bancoDeDados.CarregarDados(_se.Pessoas);
+            ComandoRemoverPessoa = new ExecutarComando(delegate { RemoverPessoa(); });
 
-			AbrirFormularioAluno = new ExecutarComando((_) =>
-			{
-				FormularioAluno formulario = new FormularioAluno();
-				Pessoa nova = new Aluno();
+            ComandoAtualizarPessoa = new ExecutarComando(delegate { AtualizarPessoa(); });
+        }
 
-				formulario.DataContext = nova;
-				formulario.ShowDialog();
-				
-				_se.AdicionarPessoa(nova as Aluno, _bancoDeDados);
-			});
+        public ICommand AbrirFormularioAluno { get; set; }
+        public ICommand AbrirFormularioFaxineiro { get; set; }
+        public ICommand AbrirFormularioProfessor { get; set; }
+        public ICommand ComandoAtualizarPessoa { get; set; }
+        public ICommand ComandoRemoverPessoa { get; set; }
+        public ObservableCollection<Pessoa> Pessoas
+        { get { return _se.Pessoas; } }
+        public Pessoa PessoaSelecionada { get; set; }
 
-			AbrirFormularioProfessor = new ExecutarComando((_) =>
-			{
-				FormularioProfessor formulario = new FormularioProfessor();
-				Pessoa nova = new Professor();
+        private void AdicionarAluno()
+        {
+            FormularioAluno formulario = new FormularioAluno();
+            Pessoa nova = new Aluno();
 
-				formulario.DataContext = nova;
-				formulario.ShowDialog();
+            formulario.DataContext = nova;
+            formulario.ShowDialog();
 
-				_se.AdicionarPessoa(nova as Professor, _bancoDeDados);
-			});
+            _se.AdicionarPessoa(nova as Aluno, _bancoDeDados);
+        }
 
-			AbrirFormularioFaxineiro = new ExecutarComando((_) =>
-			{
-				FormularioFaxineiro formulario = new FormularioFaxineiro();
-				Pessoa nova = new Faxineiro();
+        private void AdicionarFaxineiro()
+        {
+            FormularioFaxineiro formulario = new FormularioFaxineiro();
+            Pessoa nova = new Faxineiro();
 
-				formulario.DataContext = nova;
-				formulario.ShowDialog();
+            formulario.DataContext = nova;
+            formulario.ShowDialog();
 
-				_se.AdicionarPessoa(nova);
-				_bancoDeDados.Inserir(nova as Faxineiro, typeof(Faxineiro));
-			});
+            _se.AdicionarPessoa(nova as Faxineiro, _bancoDeDados);
+        }
 
-			RemoverPessoa = new ExecutarComando((_) =>
-			{
-				if (PessoaSelecionada != null)
-				{
-					_bancoDeDados.Remover(PessoaSelecionada);
-					PessoaSelecionada.SairDe(Pessoas);
-					PropriedadeMudou(nameof(Pessoas));
-				}
-			});
+        private void AdicionarProfessor()
+        {
+            FormularioProfessor formulario = new FormularioProfessor();
+            Pessoa nova = new Professor();
 
-			AtualizarPessoa = new ExecutarComando((_) =>
-			{
-				if (PessoaSelecionada != null)
-				{
-					Aluno aluno = PessoaSelecionada as Aluno;
-					Professor professor = PessoaSelecionada as Professor;
-					Faxineiro faxineiro = PessoaSelecionada as Faxineiro;
+            formulario.DataContext = nova;
+            formulario.ShowDialog();
 
-					if (aluno != null)
-					{
-						Pessoa editado = new Aluno();
-						FormularioAluno form = new FormularioAluno();
-						form.DataContext = editado;
-						form.ShowDialog();
-						if (!string.IsNullOrEmpty(editado.Nome) &&
-							!string.IsNullOrEmpty(editado.Sobrenome))
+            _se.AdicionarPessoa(nova as Professor, _bancoDeDados);
+        }
 
+        private void AtualizarPessoa()
+        {
+            if (PessoaSelecionada == null)
+            {
+                return;
+            }
 
-						{
-							for (int i = 0; i < Pessoas.Count; ++i)
-							{
-								if (Pessoas[i] == PessoaSelecionada)
-								{
-									Pessoas.RemoveAt(i);
-									Pessoas.Insert(i, editado);
-								}
-							}
-							_bancoDeDados.Remover(aluno);
-							_bancoDeDados.Inserir(editado, typeof(Aluno));
-						}
-					}
+            if (PessoaSelecionada is Aluno aluno)
+            {
+                Pessoa editado = new Aluno();
+                FormularioAluno form = new FormularioAluno();
+                form.DataContext = editado;
+                form.ShowDialog();
+                if (!string.IsNullOrEmpty(editado.Nome) &&
+                    !string.IsNullOrEmpty(editado.Sobrenome))
 
-					if (professor != null)
-					{
-						Pessoa editado = new Professor();
-						FormularioProfessor form = new FormularioProfessor();
-						form.DataContext = editado;
-						form.ShowDialog();
-						if (!string.IsNullOrEmpty(editado.Nome) &&
-							!string.IsNullOrEmpty(editado.Sobrenome))
+                {
+                    for (int i = 0; i < Pessoas.Count; ++i)
+                    {
+                        if (Pessoas[i] == PessoaSelecionada)
+                        {
+                            Pessoas.RemoveAt(i);
+                            Pessoas.Insert(i, editado);
+                        }
+                    }
+                    _bancoDeDados.Remover(aluno);
+                    _bancoDeDados.Inserir(editado);
+                }
+            }
 
+            if (PessoaSelecionada is Professor professor)
+            {
+                Pessoa editado = new Professor();
+                FormularioProfessor form = new FormularioProfessor();
+                form.DataContext = editado;
+                form.ShowDialog();
+                if (!string.IsNullOrEmpty(editado.Nome) &&
+                    !string.IsNullOrEmpty(editado.Sobrenome))
 
-						{
-							for (int i = 0; i < Pessoas.Count; ++i)
-							{
-								if (Pessoas[i] == PessoaSelecionada)
-								{
-									Pessoas.RemoveAt(i);
-									Pessoas.Insert(i, editado);
-								}
-							}
-							_bancoDeDados.Remover(professor);
-							_bancoDeDados.Inserir(editado, typeof(Professor));
-						}
-					}
+                {
+                    for (int i = 0; i < Pessoas.Count; ++i)
+                    {
+                        if (Pessoas[i] == PessoaSelecionada)
+                        {
+                            Pessoas.RemoveAt(i);
+                            Pessoas.Insert(i, editado);
+                        }
+                    }
+                    _bancoDeDados.Remover(professor);
+                    _bancoDeDados.Inserir(editado);
+                }
+            }
 
-					if (faxineiro != null)
-					{
-						Pessoa editado = new Faxineiro();
-						FormularioFaxineiro form = new FormularioFaxineiro();
-						form.DataContext = editado;
-						form.ShowDialog();
-						if (!string.IsNullOrEmpty(editado.Nome) &&
-							!string.IsNullOrEmpty(editado.Sobrenome))
+            if (PessoaSelecionada is Faxineiro faxineiro)
+            {
+                Pessoa editado = new Faxineiro();
+                FormularioFaxineiro form = new FormularioFaxineiro();
+                form.DataContext = editado;
+                form.ShowDialog();
+                if (!string.IsNullOrEmpty(editado.Nome) &&
+                    !string.IsNullOrEmpty(editado.Sobrenome))
 
+                {
+                    for (int i = 0; i < Pessoas.Count; ++i)
+                    {
+                        if (Pessoas[i] == PessoaSelecionada)
+                        {
+                            Pessoas.RemoveAt(i);
+                            Pessoas.Insert(i, editado);
+                        }
+                    }
+                    _bancoDeDados.Remover(faxineiro);
+                    _bancoDeDados.Inserir(editado);
+                }
+            }
+        }
 
-						{
-							for (int i = 0; i < Pessoas.Count; ++i)
-							{
-								if (Pessoas[i] == PessoaSelecionada)
-								{
-									Pessoas.RemoveAt(i);
-									Pessoas.Insert(i, editado);
-								}
-							}
-							_bancoDeDados.Remover(faxineiro);
-							_bancoDeDados.Inserir(editado, typeof(Faxineiro));
-						}
-					}
-				}
-			});
-		}
+        private void Init()
+        {
+            _se = new Model.SistemaEscola();
+            //_bancoDeDados = new PostgreSql("localhost", "root", "example", "escola");
+            _bancoDeDados = new MariaDb("localhost", "root", "example", "escola");
+            _bancoDeDados.CarregarDados(_se.Pessoas);
+        }
 
-
-	}
+        private void RemoverPessoa()
+        {
+            if (PessoaSelecionada != null)
+            {
+                _bancoDeDados.Remover(PessoaSelecionada);
+                PessoaSelecionada.SairDe(Pessoas);
+                PropriedadeMudou(nameof(Pessoas));
+            }
+        }
+    }
 }

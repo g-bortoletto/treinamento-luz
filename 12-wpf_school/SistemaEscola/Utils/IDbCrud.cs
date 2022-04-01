@@ -6,12 +6,14 @@ namespace SistemaEscola.Utils
 {
 	public interface IDbCrud
 	{
-		void Conectar();
-		void Desconectar();
+        void CarregarDados(Collection<Pessoa> cp);
 
-		void Inserir(Pessoa pessoa, Type typeOfPessoa);
-		void CarregarDados(Collection<Pessoa> cp);
-		void Editar(Pessoa pessoa, Pessoa atualizada);
-		void Remover(Pessoa pessoa);
+        void Conectar();
+        void Desconectar();
+
+        void Editar(Pessoa pessoa, Pessoa atualizada);
+
+        void Inserir(Pessoa pessoa);
+        void Remover(Pessoa pessoa);
 	}
 }

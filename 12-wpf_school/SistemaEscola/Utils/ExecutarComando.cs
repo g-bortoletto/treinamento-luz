@@ -16,7 +16,7 @@ namespace SistemaEscola.Utils
 			m_podeExecutar = podeExecutar;
 		}
 
-		public bool PodeExecutar(object param) => CanExecute(param);
+        public bool PodeExecutar(object param) => CanExecute(param);
 		public bool CanExecute(object parameter) => m_podeExecutar == null || m_podeExecutar(parameter);
 		
 		public void Executar(object param) => Execute(param);
