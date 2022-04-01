@@ -123,6 +123,7 @@ namespace SistemaEscola.Utils
                                 $"WHERE id='{professor.Id}'", _conexao);
             cmd.ExecuteNonQuery();
         }
+
         private void CarregarAlunos(Collection<Pessoa> list)
         {
             MySqlCommand cmd = new MySqlCommand("SELECT * FROM alunos;", _conexao);
